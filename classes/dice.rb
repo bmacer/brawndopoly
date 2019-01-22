@@ -10,8 +10,6 @@ class Dice
     rand(6) + 1
   end
 
-  private
-
   def roll
     @value = get_random_number
   end
