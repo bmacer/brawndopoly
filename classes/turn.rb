@@ -1,6 +1,10 @@
 require_relative 'player'
 require_relative 'space'
+require_relative 'card'
+require_relative 'deck'
+
 require_relative '../scratch'
+
 
 
 class Turn
@@ -16,10 +20,20 @@ class Turn
     puts "#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]]\n\n"
   end
 
+  def draw_a_card
+    puts 'not a property'
+    $deck.pick_a_card
+    sleep(1)
+  end
+
   def action_on_spot(player)
     if $spaces[player.location.to_i].number == 30
       sleep(0.2)
       go_to_jail
+    elsif !$spaces[player.location.to_i].is_property
+      draw_a_card
+    else
+      puts 'is a property'
     end
   end
 

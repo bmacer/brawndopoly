@@ -1,4 +1,7 @@
 require_relative 'classes/space'
+require_relative 'classes/card'
+require_relative 'classes/deck'
+
 
 $spaces = []
 [
@@ -46,3 +49,26 @@ $spaces = []
   puts i
   $spaces << Space.new({name: i[:name], number: i[:number], is_property: i[:is_property]})
 end
+
+cards = []
+[
+  {action_type: "move", action_value: 0},
+  {action_type: "get", action_value: -50},
+  {action_type: "get", action_value: 50},
+  {action_type: "move", action_value: 30}
+].each do |i|
+  cards << Card.new(
+    {action_type: i[:action_type],
+    action_value: i[:action_value]}
+  )
+end
+
+$deck = Deck.new(cards)
+
+
+=begin
+puts $d.deck[0][:action_type]
+draw = $d.pick_a_card
+puts draw[:action_type]
+$d.each {|i| puts i[:action_value]}
+=end
