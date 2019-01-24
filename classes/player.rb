@@ -1,23 +1,11 @@
 class Player
 
-  attr_accessor :name, :is_human, :players_dice
+  attr_accessor :name, :human, :players_dice ,:location
 
   def initialize(options={})
-    puts options
+    @location = 0
     @name = options[:name] || "Computer"
-    @is_human = options[:is_human].nil? ? false : true
-    @players_dice = DiceSet.new
-    puts @players_dice.display
-    puts @name
-    puts @is_human
-  end
-
-  def display
-    puts "#{@name} | #{@is_human}"
-  end
-
-  def roll
-    @players_dice.roll
+    @human = options[:human] ? true : false
   end
 
 end
