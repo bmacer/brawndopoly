@@ -4,7 +4,21 @@
     "0":
     {"name": "Go", "number": 0, "is_property": false},
     "1":
-    {"name": "Mediterranean Avenue", "number": 1, "is_property": true},
+    {
+      "name": "Mediterranean Avenue",
+      "number": 1,
+      "is_property": true,
+      "propery_cost": 60,
+      "house_cost": 50,
+      "mortgage_value": 30,
+      "rent": 2,
+      "with_one_house": 10,
+      "with_two_houses": 30,
+      "with_three_houses": 90,
+      "with_four_houses": 160,
+      "with_hotel": 250,
+      "mortgage"
+    },
     "2":
     {"name": "Community Chest", "number": 2, "is_property": false},
     "3":
