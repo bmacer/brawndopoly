@@ -2,26 +2,22 @@ require_relative 'player'
 require_relative 'space'
 require_relative 'card'
 require_relative 'deck'
-
 require_relative '../scratch'
-
-
 
 class Turn
 
   attr_accessor :player_list, :move, :roll_result, :messsage, :spaces, :double_count
-
 
   def go_to_jail
     puts "GO TO JAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     @turn.location = 10
     @double_count = 0
     @player_list = @player_list.rotate
-    puts "#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]]\n\n"
+    puts "#{@turn.name} is NOW on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
   end
 
   def draw_a_card
-    puts 'not a property'
+    print ' not a property'
     $deck.pick_a_card
     sleep(1)
   end
@@ -33,7 +29,7 @@ class Turn
     elsif !$spaces[player.location.to_i].is_property
       draw_a_card
     else
-      puts 'is a property'
+      print ' is a property'
     end
   end
 
@@ -52,15 +48,15 @@ class Turn
         @message = "doubles! "
       else
         @message = ""
-        puts "#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
+        print "#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
         go_to_jail
         return
       end
 
     end
-    puts "#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
+    print "\n#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
     @turn.location = (@turn.location + @roll_total) % 40
-    puts "#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]]\n\n"
+    print "\n\n#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
     action_on_spot(@turn)
     @message = ""
   end
