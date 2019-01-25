@@ -17,7 +17,6 @@
       "with_three_houses": 90,
       "with_four_houses": 160,
       "with_hotel": 250,
-      "mortgage"
     },
     "2":
     {"name": "Community Chest", "number": 2, "is_property": false},
