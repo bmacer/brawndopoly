@@ -8,7 +8,12 @@ f = File.read("settings.json")
 j = JSON.load(f)
 j["spaces"].each do |k,v|
   $spaces << Space.new(
-    {name: v["name"], number: v["number"], is_property: v["is_property"]}
+    {
+      name: v["name"],
+      number: v["number"],
+      is_property: v["is_property"],
+      property_cost: v["property_cost"]
+    }
   )
 end
 
