@@ -75,7 +75,7 @@ class Turn
     until false
       @turn = @player_list[0]
       if @turn.human
-        print "#{@turn.name}: 'r' to roll, 'q' to quit': "
+        print "\n#{@turn.name}: 'r' to roll, 'q' to quit': "
         @move = gets.chomp
         if @move == 'q'
           exit
