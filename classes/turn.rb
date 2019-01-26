@@ -29,8 +29,7 @@ class Turn
     elsif space.is_property
       puts "\n#{space.name}: $#{space.property_cost}"
       if !space.is_owned
-        space.is_owned = true
-        space.owner = player
+        option_to_buy(player, space)
       end
     elsif !space.is_property
       draw_a_card
@@ -39,6 +38,41 @@ class Turn
       print ' is a property'
     end
   end
+
+  def option_to_buy(player, space)
+    if player.human
+      puts "you have $#{player.bank}."
+      print "purchase #{space.name} for $#{space.property_cost}? ('y' or 'n') "
+      option = gets.chomp
+      if option == 'y'
+        money_transfer(player, space.property_cost)
+        space.is_owned = true
+        space.owner = player
+        puts "#{space.name} purchased by #{player.name}"
+      end
+    else
+      if player.bank > space.property_cost
+        money_transfer(player, space.property_cost)
+        space.is_owned = true
+        space.owner = player
+      end
+    end
+  end
+
+  def money_transfer(from, amount, recipient=nil)
+    from.bank -= amount
+    if from.bank < 0
+      player_in_the_red
+    end
+    if recipient
+      recipient += amount
+    end
+  end
+
+  def player_in_the_red
+    puts "YOU ARE IN THE RED!!!!"
+  end
+
 
   def roll
     @die_1 = rand(6)+1
@@ -106,7 +140,19 @@ class Turn
         puts "#{space.name} owned by #{space.owner.name}"
       end
     end
-    
+
+    @player_list.each do |player|
+      puts "~~~"
+      puts player.name
+      puts "$#{player.bank}"
+      $spaces.find_all {|space| space.owner == player}.each {|space| puts space.name}
+    end
+    $spaces.find_all do |space|
+      if space.is_property && !space.is_owned
+        puts "UNOWNED: #{space.name}"
+      end
+    end
+
     exit
   end
 
