@@ -2,13 +2,19 @@
   "spaces":
   {
     "0":
-    {"name": "Go", "number": 0, "is_property": false},
+    {
+      "name": "Go",
+      "number": 0,
+      "is_property": false
+    },
     "1":
     {
       "name": "Mediterranean Avenue",
       "number": 1,
       "is_property": true,
-      "propery_cost": 60,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 60,
       "house_cost": 50,
       "mortgage_value": 30,
       "rent": 2,
@@ -16,97 +22,537 @@
       "with_two_houses": 30,
       "with_three_houses": 90,
       "with_four_houses": 160,
-      "with_hotel": 250,
+      "with_hotel": 250
     },
     "2":
-    {"name": "Community Chest", "number": 2, "is_property": false},
+    {
+      "name": "Community Chest",
+      "number": 2,
+      "is_property": false
+    },
     "3":
-    {"name": "Baltic Avenue", "number": 3, "is_property": true},
+    {
+      "name": "Baltic Avenue",
+      "number": 3,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 60,
+      "house_cost": 50,
+      "mortgage_value": 30,
+      "rent": 4,
+      "with_one_house": 20,
+      "with_two_houses": 60,
+      "with_three_houses": 180,
+      "with_four_houses": 320,
+      "with_hotel": 450
+    },
     "4":
-    {"name": "Income Tax", "number": 4, "is_property": false},
+    {
+      "name": "Income Tax",
+      "number": 4,
+      "is_property": false
+    },
     "5":
-    {"name": "Reading Railroad", "number": 5, "is_property": true},
+    {
+      "name": "Reading Railroad",
+      "number": 5,
+      "is_property": true,
+      "is_railroad": true,
+      "is_utility": false,
+      "property_cost": 200,
+      "mortgage_value": 100,
+      "rent": 25,
+      "rent_two_rr": 50,
+      "rent_three_rr": 100,
+      "rent_four_rr": 200
+    },
     "6":
-    {"name": "Oriental Avenue", "number": 6, "is_property": true},
+    {
+      "name": "Oriental Avenue",
+      "number": 6,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 100,
+      "house_cost": 50,
+      "mortgage_value": 50,
+      "rent": 6,
+      "with_one_house": 30,
+      "with_two_houses": 90,
+      "with_three_houses": 270,
+      "with_four_houses": 400,
+      "with_hotel": 550
+    },
     "7":
-    {"name": "Chance", "number": 7, "is_property": false},
+    {
+      "name": "Chance",
+      "number": 7,
+      "is_property": false
+    },
     "8":
-    {"name": "Vermont Avenue", "number": 8, "is_property": true},
+    {
+      "name": "Vermont Avenue",
+      "number": 8,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 100,
+      "house_cost": 50,
+      "mortgage_value": 50,
+      "rent": 6,
+      "with_one_house": 30,
+      "with_two_houses": 90,
+      "with_three_houses": 270,
+      "with_four_houses": 400,
+      "with_hotel": 550
+    },
     "9":
-    {"name": "Connecticut Avenue", "number": 9, "is_property": true},
+    {
+      "name": "Connecticut Avenue",
+      "number": 9,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 120,
+      "house_cost": 50,
+      "mortgage_value": 60,
+      "rent": 8,
+      "with_one_house": 40,
+      "with_two_houses": 100,
+      "with_three_houses": 300,
+      "with_four_houses": 450,
+      "with_hotel": 600
+    },
     "10":
-    {"name": "Jail", "number": 10, "is_property": false},
+    {
+      "name": "Jail",
+      "number": 10,
+      "is_property": false
+    },
     "11":
-    {"name": "St. Charles Place", "number": 11, "is_property": true},
+    {
+      "name": "St. Charles Place",
+      "number": 11,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 140,
+      "house_cost": 100,
+      "mortgage_value": 70,
+      "rent": 10,
+      "with_one_house": 50,
+      "with_two_houses": 150,
+      "with_three_houses": 450,
+      "with_four_houses": 625,
+      "with_hotel": 750
+    },
     "12":
-    {"name": "Electric Company", "number": 12, "is_property": true},
+    {
+      "name": "Electric Company",
+      "number": 12,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": true,
+      "property_cost": 150,
+      "mortgage_value": 75,
+      "multiplier_with_one_utility": 4,
+      "multiplier_with_two_utilities": 10
+    },
     "13":
-    {"name": "States Avenue", "number": 13, "is_property": true},
+    {
+      "name": "States Avenue",
+      "number": 13,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 140,
+      "house_cost": 100,
+      "mortgage_value": 70,
+      "rent": 10,
+      "with_one_house": 50,
+      "with_two_houses": 150,
+      "with_three_houses": 450,
+      "with_four_houses": 625,
+      "with_hotel": 750
+    },
     "14":
-    {"name": "Virginia Avenue", "number": 14, "is_property": true},
+    {
+      "name": "Virginia Avenue",
+      "number": 14,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 160,
+      "house_cost": 100,
+      "mortgage_value": 70,
+      "rent": 10,
+      "with_one_house": 50,
+      "with_two_houses": 150,
+      "with_three_houses": 450,
+      "with_four_houses": 625,
+      "with_hotel": 750
+    },
     "15":
-    {"name": "Pennsylvania Railroad", "number": 15, "is_property": true},
+    {
+      "name": "Pennsylvania Railroad",
+      "number": 15,
+      "is_property": true,
+      "is_railroad": true,
+      "is_utility": false,
+      "property_cost": 200,
+      "mortgage_value": 100,
+      "rent": 25,
+      "rent_two_rr": 50,
+      "rent_three_rr": 100,
+      "rent_four_rr": 200
+    },
     "16":
-    {"name": "St. James Place", "number": 16, "is_property": true},
+    {
+      "name": "St. James Place",
+      "number": 16,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 180,
+      "house_cost": 100,
+      "mortgage_value": 90,
+      "rent": 14,
+      "with_one_house": 70,
+      "with_two_houses": 200,
+      "with_three_houses": 550,
+      "with_four_houses": 750,
+      "with_hotel": 950
+    },
     "17":
-    {"name": "Community Chest", "number": 17, "is_property": false},
+    {
+      "name": "Community Chest",
+      "number": 17,
+      "is_property": false
+    },
     "18":
-    {"name": "Tennessee Avenue", "number": 18, "is_property": true},
+    {
+      "name": "Tennessee Avenue",
+      "number": 18,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 180,
+      "house_cost": 100,
+      "mortgage_value": 90,
+      "rent": 14,
+      "with_one_house": 70,
+      "with_two_houses": 200,
+      "with_three_houses": 550,
+      "with_four_houses": 750,
+      "with_hotel": 950
+    },
     "19":
-    {"name": "New York Avenue", "number": 19, "is_property": true},
+    {
+      "name": "New York Avenue",
+      "number": 19,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 200,
+      "house_cost": 100,
+      "mortgage_value": 100,
+      "rent": 16,
+      "with_one_house": 80,
+      "with_two_houses": 220,
+      "with_three_houses": 600,
+      "with_four_houses": 800,
+      "with_hotel": 1000
+    },
     "20":
-    {"name": "Free Parking", "number": 20, "is_property": false},
+    {
+      "name": "Free Parking",
+      "number": 20,
+      "is_property": false
+    },
     "21":
-    {"name": "Kentucky Avenue", "number": 21, "is_property": true},
+    {
+      "name": "Kentucky Avenue",
+      "number": 21,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 220,
+      "house_cost": 150,
+      "mortgage_value": 110,
+      "rent": 18,
+      "with_one_house": 90,
+      "with_two_houses": 250,
+      "with_three_houses": 700,
+      "with_four_houses": 875,
+      "with_hotel": 1050
+    },
     "22":
-    {"name": "Chance", "number": 22, "is_property": false},
+    {
+      "name": "Chance",
+      "number": 22,
+      "is_property": false
+    },
     "23":
-    {"name": "Indiana Avenue", "number": 23, "is_property": true},
+    {
+      "name": "Indiana Avenue",
+      "number": 23,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 220,
+      "house_cost": 150,
+      "mortgage_value": 110,
+      "rent": 18,
+      "with_one_house": 90,
+      "with_two_houses": 250,
+      "with_three_houses": 700,
+      "with_four_houses": 875,
+      "with_hotel": 1050
+    },
     "24":
-    {"name": "Illinois Avenue", "number": 24, "is_property": true},
+    {
+      "name": "Illinois Avenue",
+      "number": 24,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 240,
+      "house_cost": 150,
+      "mortgage_value": 120,
+      "rent": 20,
+      "with_one_house": 100,
+      "with_two_houses": 300,
+      "with_three_houses": 750,
+      "with_four_houses": 925,
+      "with_hotel": 1100
+    },
     "25":
-    {"name": "B & O Railroad", "number": 25, "is_property": true},
+    {
+      "name": "B & O Railroad",
+      "number": 25,
+      "is_property": true,
+      "is_railroad": true,
+      "is_utility": false,
+      "property_cost": 200,
+      "mortgage_value": 100,
+      "rent": 25,
+      "rent_two_rr": 50,
+      "rent_three_rr": 100,
+      "rent_four_rr": 200
+    },
     "26":
-    {"name": "Atlantic Avenue", "number": 26, "is_property": true},
+    {
+      "name": "Atlantic Avenue",
+      "number": 26,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 260,
+      "house_cost": 150,
+      "mortgage_value": 130,
+      "rent": 22,
+      "with_one_house": 110,
+      "with_two_houses": 330,
+      "with_three_houses": 800,
+      "with_four_houses": 975,
+      "with_hotel": 1150
+    },
     "27":
-    {"name": "Ventnor Avenue", "number": 27, "is_property": true},
+    {
+      "name": "Ventnor Avenue",
+      "number": 27,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 260,
+      "house_cost": 150,
+      "mortgage_value": 130,
+      "rent": 22,
+      "with_one_house": 110,
+      "with_two_houses": 330,
+      "with_three_houses": 800,
+      "with_four_houses": 975,
+      "with_hotel": 1150
+    },
     "28":
-    {"name": "Water Works", "number": 28, "is_property": true},
+    {
+      "name": "Water Works",
+      "number": 28,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": true,
+      "property_cost": 150,
+      "mortgage_value": 75,
+      "multiplier_with_one_utility": 4,
+      "multiplier_with_two_utilities": 10
+    },
     "29":
-    {"name": "Marvin Gardens", "number": 29, "is_property": true},
+    {
+      "name": "Marvin Gardens",
+      "number": 29,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 280,
+      "house_cost": 150,
+      "mortgage_value": 140,
+      "rent": 24,
+      "with_one_house": 120,
+      "with_two_houses": 360,
+      "with_three_houses": 850,
+      "with_four_houses": 1025,
+      "with_hotel": 1200
+    },
     "30":
-    {"name": "Go To Jail", "number": 30, "is_property": false, "action": "go_to_jail"},
+    {
+      "name": "Go To Jail",
+      "number": 30,
+      "is_property": false,
+      "action": "go_to_jail"
+    },
     "31":
-    {"name": "Pacific Avenue", "number": 31, "is_property": true},
+    {
+      "name": "Pacific Avenue",
+      "number": 31,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 300,
+      "house_cost": 200,
+      "mortgage_value": 150,
+      "rent": 26,
+      "with_one_house": 130,
+      "with_two_houses": 390,
+      "with_three_houses": 900,
+      "with_four_houses": 1100,
+      "with_hotel": 1275
+    },
     "32":
-    {"name": "North Carolina Avenue", "number": 32, "is_property": true},
+    {
+      "name": "North Carolina Avenue",
+      "number": 32,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 300,
+      "house_cost": 200,
+      "mortgage_value": 150,
+      "rent": 26,
+      "with_one_house": 130,
+      "with_two_houses": 390,
+      "with_three_houses": 900,
+      "with_four_houses": 1100,
+      "with_hotel": 1275
+    },
     "33":
-    {"name": "Community Chest", "number": 33, "is_property": false},
+    {
+      "name": "Community Chest",
+      "number": 33,
+      "is_property": false
+    },
     "34":
-    {"name": "Pennsylvania Avenue", "number": 34, "is_property": true},
+    {
+      "name": "Pennsylvania Avenue",
+      "number": 34,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 320,
+      "house_cost": 200,
+      "mortgage_value": 160,
+      "rent": 28,
+      "with_one_house": 150,
+      "with_two_houses": 450,
+      "with_three_houses": 1000,
+      "with_four_houses": 1200,
+      "with_hotel": 1400
+    },
     "35":
-    {"name": "Short Line Railroad", "number": 35, "is_property": true},
+    {
+      "name": "Short Line Railroad",
+      "number": 35,
+      "is_property": true,
+      "is_railroad": true,
+      "is_utility": false,
+      "property_cost": 200,
+      "mortgage_value": 100,
+      "rent": 25,
+      "rent_two_rr": 50,
+      "rent_three_rr": 100,
+      "rent_four_rr": 200
+    },
     "36":
-    {"name": "Chance", "number": 36, "is_property": false},
+    {
+      "name": "Chance",
+      "number": 36,
+      "is_property": false
+    },
     "37":
-    {"name": "Park Place", "number": 37, "is_property": true},
+    {
+      "name": "Park Place",
+      "number": 37,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 350,
+      "house_cost": 200,
+      "mortgage_value": 175,
+      "rent": 35,
+      "with_one_house": 175,
+      "with_two_houses": 500,
+      "with_three_houses": 1100,
+      "with_four_houses": 1300,
+      "with_hotel": 1500
+    },
     "38":
-    {"name": "Luxury Tax", "number": 38, "is_property": false},
+    {
+      "name": "Luxury Tax",
+      "number": 38,
+      "is_property": false
+    },
     "39":
-    {"name": "Boardwalk", "number": 39, "is_property": true}
+    {
+      "name": "Boardwalk",
+      "number": 39,
+      "is_property": true,
+      "is_railroad": false,
+      "is_utility": false,
+      "property_cost": 400,
+      "house_cost": 200,
+      "mortgage_value": 200,
+      "rent": 50,
+      "with_one_house": 200,
+      "with_two_houses": 600,
+      "with_three_houses": 1400,
+      "with_four_houses": 1700,
+      "with_hotel": 2000
+    }
   },
   "cards":
   {
     "chance":
     {
       "0":
-      {"action_type": "move", "action_value": 0},
+      {
+        "action_type": "move",
+        "action_value": 0
+      },
       "1":
-      {"action_type": "get", "action_value": -50},
+      {
+        "action_type": "get",
+        "action_value": -50
+      },
       "2":
-      {"action_type": "get", "action_value": 50},
+      {
+        "action_type": "get",
+        "action_value": 50
+      },
       "3":
-      {"action_type": "move", "action_value": 30}
+      {
+        "action_type": "move",
+        "action_value": 30
+      }
     }
   }
 }
