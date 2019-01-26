@@ -10,9 +10,11 @@ class Turn
 
   attr_accessor :player_list, :move, :roll_result, :messsage, :spaces, :double_count
 
-  def go_to_jail
+  def go_to_jail(player)
     puts "GO TO JAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     @turn.location = 10
+    player.in_jail = true
+    player.turns_in_jail = 1
     @double_count = 0
     @player_list = @player_list.rotate
     puts "#{@turn.name} is NOW on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
@@ -25,7 +27,7 @@ class Turn
 
   def action_on_spot(player, space)
     if space.number == 30
-      go_to_jail
+      go_to_jail(player)
     elsif space.is_property
       puts "\n#{space.name}: $#{space.property_cost}"
       if !space.is_owned
@@ -59,9 +61,9 @@ class Turn
     end
   end
 
-  def money_transfer(from, amount, recipient=nil)
-    from.bank -= amount
-    if from.bank < 0
+  def money_transfer(player, amount, recipient=nil)
+    player.bank -= amount
+    if player.bank < 0
       player_in_the_red
     end
     if recipient
@@ -73,8 +75,55 @@ class Turn
     puts "YOU ARE IN THE RED!!!!"
   end
 
+  def roll_from_jail(player)
 
-  def roll
+    puts "You're in jail.  This is roll number #{player.turns_in_jail} from jail."
+    if player.turns_in_jail == 3
+      puts "TOO MANY, you must pay"
+      puts player.bank
+      money_transfer(player, 100)
+      puts player.bank
+      player.in_jail = false
+      player.turns_in_jail = 0
+      sleep(3)
+    end
+    puts "Roll for doubles or pay $100?  'r' or 'p': "
+     sleep(0.5)
+    # choice = gets.chomp
+    choice = 'r'
+    if choice == 'r'
+      print("rolling...")
+      player.dice.roll
+      if player.dice.doubles
+        player.in_jail == false
+        player.turns_in_jail = 0
+      else
+        player.turns_in_jail += 1
+      end
+    elsif choice == 'p'
+      money_transfer(player, 100)
+      player.in_jail == false
+      player.turns_in_jail = 0
+      print("paying...")
+    else
+      print("other...")
+    end
+
+    puts player.dice.display
+    puts player.dice.doubles
+    puts player.name
+    if player.dice.doubles
+      player.in_jail == false
+      player.turns_in_jail = 0
+    else
+  end
+end
+
+  def roll(player)
+    if player.in_jail
+      roll_from_jail(player)
+    end
+
     @die_1 = rand(6)+1
     @die_2 = rand(6)+1
     @roll_total = @die_1 + @die_2
@@ -90,15 +139,16 @@ class Turn
       else
         @message = ""
         print "#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
-        go_to_jail
+        go_to_jail(player)
         return
       end
-
     end
+
     @@total_turns += 1
     if @@total_turns > 50
       exit_game
     end
+
     print "\n#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
     @turn.location = (@turn.location + @roll_total) % 40
     print "\n\n#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
@@ -125,10 +175,10 @@ class Turn
         if @move == 'q'
           exit
         elsif @move == 'r'
-          roll
+          roll(@turn)
         end
       else
-        roll
+        roll(@turn)
       end
     end
   end
