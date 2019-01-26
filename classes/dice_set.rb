@@ -6,7 +6,7 @@ class DiceSet < Dice
 
   def initialize
     @die_1, @die_2 = Dice.new, Dice.new
-    @value = @die_1.value + @die_2.value
+    @total = @die_1.value + @die_2.value
     @doubles = @die_1.value == @die_2.value
     display
   end
@@ -18,7 +18,7 @@ class DiceSet < Dice
   def roll
     @die_1.roll
     @die_2.roll
-    @value = @die_1.value + @die_2.value
+    @total = @die_1.value + @die_2.value
     @doubles = @die_1.value == @die_2.value
     display
   end

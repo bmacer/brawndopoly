@@ -84,8 +84,8 @@ class Turn
       money_transfer(player, 100)
       puts player.bank
       player.in_jail = false
-      player.turns_in_jail = 0
-      sleep(3)
+      player.turns_in_jail = 1
+      sleep(1)
     end
     puts "Roll for doubles or pay $100?  'r' or 'p': "
      sleep(0.5)
@@ -96,14 +96,14 @@ class Turn
       player.dice.roll
       if player.dice.doubles
         player.in_jail == false
-        player.turns_in_jail = 0
+        player.turns_in_jail = 1
       else
         player.turns_in_jail += 1
       end
     elsif choice == 'p'
       money_transfer(player, 100)
       player.in_jail == false
-      player.turns_in_jail = 0
+      player.turns_in_jail = 1
       print("paying...")
     else
       print("other...")
@@ -114,45 +114,40 @@ class Turn
     puts player.name
     if player.dice.doubles
       player.in_jail == false
-      player.turns_in_jail = 0
+      player.turns_in_jail = 1
     else
   end
 end
 
   def roll(player)
-    if player.in_jail
-      roll_from_jail(player)
-    end
-
-    @die_1 = rand(6)+1
-    @die_2 = rand(6)+1
-    @roll_total = @die_1 + @die_2
-    @roll_result = [@die_1, @die_2]
-
-    if roll_result[0] != roll_result[1]
-      @player_list = @player_list.rotate
-      @double_count = 0
-    else
-      @double_count += 1
-      if @double_count < 3
-        @message = "doubles! "
-      else
-        @message = ""
-        print "#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
-        go_to_jail(player)
-        return
-      end
-    end
-
     @@total_turns += 1
     if @@total_turns > 50
       exit_game
     end
 
-    print "\n#{@turn.name} rolls #{@message}[#{@roll_result.join('] [')}]"
-    @turn.location = (@turn.location + @roll_total) % 40
-    print "\n\n#{@turn.name} is now on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
-    action_on_spot(@turn, $spaces[@turn.location.to_i])
+    if player.in_jail
+      roll_from_jail(player)
+    end
+
+    player.dice.roll
+    if !player.dice.doubles
+      @player_list = @player_list.rotate
+      @double_count = 0
+    else
+      @double_count += 1
+      if @double_count == 3
+        @double_count = 0
+        go_to_jail(player)
+      end
+    end
+
+
+
+    #print "\n#{player.name} rolls #{@message}[#{@roll_result.join('] [')}]"
+    print player.dice.display
+    player.location = (player.location + player.dice.total) % 40
+    print "\n\n#{player.name} is now on #{$spaces[player.location.to_i].name} [[space #{player.location}]] "
+    action_on_spot(player, $spaces[player.location.to_i])
     @message = ""
   end
 
@@ -202,7 +197,6 @@ end
         puts "UNOWNED: #{space.name}"
       end
     end
-
     exit
   end
 
