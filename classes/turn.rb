@@ -32,6 +32,18 @@ class Turn
       puts "\n#{space.name}: $#{space.property_cost}"
       if !space.is_owned
         option_to_buy(player, space)
+      elsif space.owner != player
+        if space.is_utility
+          puts "is owned utility" #TODO deal with landing on utility
+          land_on_utility(player, space)
+        elsif space.is_railroad
+          puts "is owned railroad" #TODO deal with landing on owned railroad
+          land_on_railroad(player, space)
+        else
+          puts "is owned regular property" #TODO deal with landing on owned regular property
+          land_on_regular_property(player, space)
+          sleep(1)
+        end
       end
     elsif !space.is_property
       draw_a_card
@@ -39,6 +51,17 @@ class Turn
     else
       print ' is a property'
     end
+  end
+
+  def land_on_utility(player, space)
+  end
+
+  def land_on_railroad(player, space)
+  end
+
+  def land_on_regular_property(player, space)
+    puts "#{space.name} is owned by #{space.owner.name}.  Rent is #{space.rent}"
+    money_transfer(player, space.rent, space.owner)
   end
 
   def option_to_buy(player, space)
@@ -62,12 +85,13 @@ class Turn
   end
 
   def money_transfer(player, amount, recipient=nil)
+    puts amount
     player.bank -= amount
     if player.bank < 0
       player_in_the_red
     end
     if recipient
-      recipient += amount
+      recipient.bank += amount
     end
   end
 
@@ -140,8 +164,6 @@ end
         go_to_jail(player)
       end
     end
-
-
 
     #print "\n#{player.name} rolls #{@message}[#{@roll_result.join('] [')}]"
     print player.dice.display
