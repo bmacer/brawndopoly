@@ -4,6 +4,14 @@ require_relative 'card'
 require_relative 'deck'
 require_relative '../scratch'
 
+# TODO add the ability to mortgage
+# TODO add the ability to sell houses
+# TODO add 'in-the-red' requirement
+# TODO add the ability to declare bankruptcy
+# TODO add chance/community chest basic functionality
+# TODO add comprehensive chance/community chest
+# TODO add the ability to trade
+
 class Turn
 
   @@total_turns = 0
@@ -12,23 +20,22 @@ class Turn
 
   def initialize
     @double_count = 0
-    @message = ""
-    @kill_switch = false
     @spaces = $spaces
+    @deck = $deck
 
     @player_list = [
-      Player.new({name: "brandon", human: true}),
+      Player.new({name: "brandon", human: false}),
       Player.new({name: "matt", human: false}),
       Player.new({name: "computer_1", human: false}),
       Player.new({name: "computer_2", human: false})
     ]
 
-    @spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
-      if i.is_property # && i.number != 3
-        i.owner = @player_list[0]
-        i.is_owned = true
-      end
-    end
+    #@spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
+    #  if i.is_property # && i.number != 3
+    #    i.owner = @player_list[1]
+    #    i.is_owned = true
+    #  end
+    #end
 
     until false
       player = @player_list[0]
@@ -44,7 +51,6 @@ class Turn
           if !check_for_monopoly(player)
             puts "no monopolies"
           else
-            puts "~~~"
             check_for_monopoly(player).each do |monopoly_index|
               monopolies_owned = @spaces.select do |space|
                 space.property_family == monopoly_index
@@ -59,6 +65,15 @@ class Turn
         end
       else
         roll(player)
+        check_for_monopoly(player)
+        if player.monopolies
+          player.monopolies.reverse.each do |family_number|
+            properties = @spaces.select {|i| i.property_family == family_number}
+            properties.each do |j|
+              build_a_house_here(player, j)
+            end
+          end
+        end
       end
     end
   end
@@ -70,15 +85,13 @@ class Turn
     player.turns_in_jail = 1
     @double_count = 0
     @player_list = @player_list.rotate
-    puts "#{player.name} is NOW on #{@spaces[player.location.to_i].name} [[space #{player.location}]] "
   end
 
   def draw_a_card
-    print ' not a property'
-    $deck.pick_a_card
+    @deck.pick_a_card
   end
 
-  def check_for_monopoly(player)
+  def check_for_monopoly(player) #TODO move monopoly/building methods to space class
     player_owned_sets = []
     families = @spaces.select {|i| i.is_property && !i.is_utility && !i.is_railroad}.map do |space|
       space.property_family
@@ -94,8 +107,7 @@ class Turn
     player.monopolies = player_owned_sets
   end
 
-
-  def build_a_house_here(player, property)
+  def build_a_house_here(player, property) #TODO move monopoly/building methods to space class
     family_number_houses = @spaces.select {|space| space.property_family == property.property_family}.
     map{|space| space.number_of_houses}
     if property.owner != player
@@ -111,6 +123,7 @@ class Turn
     end
     player.bank -= property.house_cost
     property.number_of_houses += 1
+    return true
   end
 
   def action_on_spot(player, space)
@@ -128,7 +141,6 @@ class Turn
           puts "is owned railroad" #TODO deal with landing on owned railroad
           land_on_railroad(player, space)
         else
-          puts "is owned regular property" #TODO deal with landing on owned regular property
           land_on_regular_property(player, space)
         end
       end
@@ -136,7 +148,7 @@ class Turn
       draw_a_card
       puts "~~~~~~"
     else
-      print ' is a property'
+      print "YOU SHOULDN'T BE SEEING THIS."
     end
   end
 
@@ -148,7 +160,6 @@ class Turn
 
   def land_on_regular_property(player, space)
     if space.number_of_houses == 0
-      puts "#{space.name} is owned by #{space.owner.name}.  Rent is #{space.rent}"
       money_transfer(player, space.rent, space.owner)
     else
       mapping = {"1" => space.with_one_house,
@@ -159,6 +170,8 @@ class Turn
       to_pay = mapping[space.number_of_houses.to_s]
       money_transfer(player, to_pay, space.owner)
     end
+    puts "#{space.name} is owned by #{space.owner.name}."
+    puts "#{space.number_of_houses ? (space.number_of_houses == 5 ? "HOTEL!" : "#{space.number_of_houses} house(s)") : ""}...Rent is #{to_pay || space.rent}"
   end
 
   def option_to_buy(player, space)
@@ -208,8 +221,7 @@ class Turn
       player.turns_in_jail = 1
     end
     puts "Roll for doubles or pay $100?  'r' or 'p': "
-    # choice = gets.chomp
-    choice = 'r'
+    choice = "r"
     if choice == 'r'
       print("rolling...")
       player.dice.roll
@@ -241,7 +253,7 @@ end
   def roll(player)
     puts player.name
     @@total_turns += 1
-    if @@total_turns > 100
+    if @@total_turns > 500
       exit_game
     end
 
@@ -261,12 +273,10 @@ end
       end
     end
 
-    #print "\n#{player.name} rolls #{@message}[#{@roll_result.join('] [')}]"
     print player.dice.display
     player.location = (player.location + player.dice.total) % 40
     print "\n\n#{player.name} is now on #{@spaces[player.location.to_i].name} [[space #{player.location}]] "
     action_on_spot(player, @spaces[player.location.to_i])
-    @message = ""
   end
 
 
@@ -278,19 +288,24 @@ end
         puts "#{space.name} owned by #{space.owner.name}"
       end
     end
-
+    net_worths = []
     @player_list.each do |player|
       puts "~~~"
       puts player.name
 
       property_total = 0
       @spaces.find_all {|space| space.owner == player}.each do |space|
-        puts space.name
+        if !space.is_utility && !space.is_railroad
+          puts "--> #{space.name} with #{space.number_of_houses == 5 ? 'a hotel' : space.number_of_houses.to_s + ' houses'}"
+        elsif
+          puts "--> #{space.name}"
+        end
         property_total += space.property_cost
       end
       puts "Total Property Value: $#{property_total}"
       puts "Total Player Bank: $#{player.bank}"
       puts "Player Net Worth: $#{property_total + player.bank}"
+      net_worths << "#{player.name}: #{property_total + player.bank}"
     end
     @spaces.find_all do |space|
       if space.is_property && !space.is_owned
@@ -298,6 +313,7 @@ end
       end
     end
     @player_list.each {|i| check_for_monopoly(i)}
+    puts net_worths
     exit
   end
 
