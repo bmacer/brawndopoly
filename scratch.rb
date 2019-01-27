@@ -30,7 +30,8 @@ j["spaces"].each do |k,v|
       rent_four_rr: v["rent_four_rr"],
       multiplier_with_one_utility: v["multiplier_with_one_utility"],
       multiplier_with_two_utilities: v["multiplier_with_two_utilities"],
-      number_of_houses: 0
+      number_of_houses: 0,
+      property_family: v["property_family"]
     }
   )
 end

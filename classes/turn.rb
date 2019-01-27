@@ -10,6 +10,42 @@ class Turn
 
   attr_accessor :player_list, :move, :roll_result, :messsage, :spaces, :double_count
 
+  def initialize
+    @double_count = 0
+    @message = ""
+    @kill_switch = false
+    @spaces = $spaces
+
+    @player_list = [
+      Player.new({name: "brandon", human: false}),
+      Player.new({name: "matt", human: false}),
+      Player.new({name: "computer_1", human: false}),
+      Player.new({name: "computer_2", human: false})
+    ]
+
+    @spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
+      if i.is_property
+        i.owner = @player_list[0]
+        i.is_owned = true
+      end
+    end
+
+    until false
+      @turn = @player_list[0]
+      if @turn.human
+        print "#{@turn.name}: 'r' to roll, 'q' to quit': "
+        @move = gets.chomp
+        if @move == 'q'
+          exit
+        elsif @move == 'r'
+          roll(@turn)
+        end
+      else
+        roll(@turn)
+      end
+    end
+  end
+
   def go_to_jail(player)
     puts "GO TO JAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     @turn.location = 10
@@ -17,13 +53,47 @@ class Turn
     player.turns_in_jail = 1
     @double_count = 0
     @player_list = @player_list.rotate
-    puts "#{@turn.name} is NOW on #{$spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
+    puts "#{@turn.name} is NOW on #{@spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
   end
 
   def draw_a_card
     print ' not a property'
     $deck.pick_a_card
   end
+
+  def check_for_monopoly(player)
+    player_owned_sets = []
+    families = @spaces.select {|i| i.is_property && !i.is_utility && !i.is_railroad}.map do |space|
+      space.property_family
+    end.uniq
+    families.each do |i|
+      total_in_family = @spaces.select {|space| space.property_family == i}.count
+      player_owns = @spaces.select {|space| space.owner == player && space.property_family == i}.count
+      if total_in_family == player_owns
+        player_owned_sets << i
+      end
+    end
+    puts "#{player.name} has #{player_owned_sets.length} monopolies"
+    player.monopolies = player_owned_sets
+  end
+
+
+  def build_a_house(player, property)
+    if property.owner != player
+      return "You don't own this property"
+    end
+    if !player.monopolies.inlcude?(property.property_family)
+      return "You don't have a monopoly on this property"
+    end
+  end
+
+
+
+
+
+
+
+
 
   def action_on_spot(player, space)
     if space.number == 30
@@ -42,7 +112,6 @@ class Turn
         else
           puts "is owned regular property" #TODO deal with landing on owned regular property
           land_on_regular_property(player, space)
-          sleep(1)
         end
       end
     elsif !space.is_property
@@ -109,10 +178,8 @@ class Turn
       puts player.bank
       player.in_jail = false
       player.turns_in_jail = 1
-      sleep(1)
     end
     puts "Roll for doubles or pay $100?  'r' or 'p': "
-     sleep(0.5)
     # choice = gets.chomp
     choice = 'r'
     if choice == 'r'
@@ -145,7 +212,7 @@ end
 
   def roll(player)
     @@total_turns += 1
-    if @@total_turns > 50
+    if @@total_turns > 500
       exit_game
     end
 
@@ -168,41 +235,16 @@ end
     #print "\n#{player.name} rolls #{@message}[#{@roll_result.join('] [')}]"
     print player.dice.display
     player.location = (player.location + player.dice.total) % 40
-    print "\n\n#{player.name} is now on #{$spaces[player.location.to_i].name} [[space #{player.location}]] "
-    action_on_spot(player, $spaces[player.location.to_i])
+    print "\n\n#{player.name} is now on #{@spaces[player.location.to_i].name} [[space #{player.location}]] "
+    action_on_spot(player, @spaces[player.location.to_i])
     @message = ""
   end
 
-  def initialize
-    @double_count = 0
-    @message = ""
-    @kill_switch = false
-    @spaces = $spaces
-    @player_list = [
-      Player.new({name: "brandon", human: false}),
-      Player.new({name: "matt", human: false}),
-      Player.new({name: "computer_1", human: false}),
-      Player.new({name: "computer_2", human: false})
-    ]
-    until false
-      @turn = @player_list[0]
-      if @turn.human
-        print "#{@turn.name}: 'r' to roll, 'q' to quit': "
-        @move = gets.chomp
-        if @move == 'q'
-          exit
-        elsif @move == 'r'
-          roll(@turn)
-        end
-      else
-        roll(@turn)
-      end
-    end
-  end
+
 
   def exit_game
     puts "exiting game"
-    $spaces.each do |space|
+    @spaces.each do |space|
       if space.is_property && space.is_owned
         puts "#{space.name} owned by #{space.owner.name}"
       end
@@ -211,14 +253,23 @@ end
     @player_list.each do |player|
       puts "~~~"
       puts player.name
-      puts "$#{player.bank}"
-      $spaces.find_all {|space| space.owner == player}.each {|space| puts space.name}
+
+      property_total = 0
+      @spaces.find_all {|space| space.owner == player}.each do |space|
+        puts space.name
+        property_total += space.property_cost
+      end
+      puts "Total Property Value: $#{property_total}"
+      puts "Total Player Bank: $#{player.bank}"
+      puts "Player Net Worth: $#{property_total + player.bank}"
     end
-    $spaces.find_all do |space|
+    @spaces.find_all do |space|
       if space.is_property && !space.is_owned
         puts "UNOWNED: #{space.name}"
       end
     end
+    @player_list.each {|i| check_for_monopoly(i)}
+    #check_for_monopoly(@player_list[0])
     exit
   end
 
