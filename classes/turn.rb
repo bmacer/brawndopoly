@@ -17,14 +17,14 @@ class Turn
     @spaces = $spaces
 
     @player_list = [
-      Player.new({name: "brandon", human: false}),
+      Player.new({name: "brandon", human: true}),
       Player.new({name: "matt", human: false}),
       Player.new({name: "computer_1", human: false}),
       Player.new({name: "computer_2", human: false})
     ]
 
     @spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
-      if i.is_property && i.number != 3
+      if i.is_property # && i.number != 3
         i.owner = @player_list[0]
         i.is_owned = true
       end
@@ -54,7 +54,7 @@ class Turn
           puts "Build House on which property? "
           choice = gets.chomp.to_i
           property = @spaces.select {|i| i.number == choice}[0]
-          build_a_house_here(player, property)
+          puts build_a_house_here(player, property)
           end
         end
       else
@@ -96,13 +96,21 @@ class Turn
 
 
   def build_a_house_here(player, property)
+    family_number_houses = @spaces.select {|space| space.property_family == property.property_family}.
+    map{|space| space.number_of_houses}
     if property.owner != player
       return "You don't own this property"
-    end
-    if !player.monopolies.include?(property.property_family)
+    elsif !player.monopolies.include?(property.property_family)
       return "You don't have a monopoly on this property"
+    elsif property.number_of_houses + 1 > (family_number_houses.min + 1)
+      return "You must build in a balanced way"
+    elsif property.number_of_houses == 5
+      return "You already have a hotel there"
+    elsif player.bank < property.house_cost
+      return "You don't have enough money for that"
     end
-    property.number_of_houses += 1 #TODO check house-count for max and balance with other props
+    player.bank -= property.house_cost
+    property.number_of_houses += 1
   end
 
   def action_on_spot(player, space)
