@@ -24,36 +24,53 @@ class Turn
     ]
 
     @spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
-      if i.is_property
+      if i.is_property && i.number != 3
         i.owner = @player_list[0]
         i.is_owned = true
       end
     end
 
     until false
-      @turn = @player_list[0]
-      if @turn.human
-        print "#{@turn.name}: 'r' to roll, 'q' to quit': "
-        @move = gets.chomp
-        if @move == 'q'
+      player = @player_list[0]
+      if player.human
+        print "#{player.location} #{player.name}: 'r' to roll, 'b' to build, 'q' to quit': "
+        move = gets.chomp
+        if move == 'q'
           exit
-        elsif @move == 'r'
-          roll(@turn)
+        elsif move == 'r'
+          roll(player)
+        elsif move == 'b'
+          puts "building"
+          if !check_for_monopoly(player)
+            puts "no monopolies"
+          else
+            puts "~~~"
+            check_for_monopoly(player).each do |monopoly_index|
+              monopolies_owned = @spaces.select do |space|
+                space.property_family == monopoly_index
+              end.each {|i| puts "#{i.number}: #{i.name} #{i.number_of_houses}"}
+              puts "~~~~~~"
+            end
+          puts "Build House on which property? "
+          choice = gets.chomp.to_i
+          property = @spaces.select {|i| i.number == choice}[0]
+          build_a_house_here(player, property)
+          end
         end
       else
-        roll(@turn)
+        roll(player)
       end
     end
   end
 
   def go_to_jail(player)
     puts "GO TO JAIL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    @turn.location = 10
+    player.location = 10
     player.in_jail = true
     player.turns_in_jail = 1
     @double_count = 0
     @player_list = @player_list.rotate
-    puts "#{@turn.name} is NOW on #{@spaces[@turn.location.to_i].name} [[space #{@turn.location}]] "
+    puts "#{player.name} is NOW on #{@spaces[player.location.to_i].name} [[space #{player.location}]] "
   end
 
   def draw_a_card
@@ -78,22 +95,15 @@ class Turn
   end
 
 
-  def build_a_house(player, property)
+  def build_a_house_here(player, property)
     if property.owner != player
       return "You don't own this property"
     end
-    if !player.monopolies.inlcude?(property.property_family)
+    if !player.monopolies.include?(property.property_family)
       return "You don't have a monopoly on this property"
     end
+    property.number_of_houses += 1 #TODO check house-count for max and balance with other props
   end
-
-
-
-
-
-
-
-
 
   def action_on_spot(player, space)
     if space.number == 30
@@ -129,8 +139,18 @@ class Turn
   end
 
   def land_on_regular_property(player, space)
-    puts "#{space.name} is owned by #{space.owner.name}.  Rent is #{space.rent}"
-    money_transfer(player, space.rent, space.owner)
+    if space.number_of_houses == 0
+      puts "#{space.name} is owned by #{space.owner.name}.  Rent is #{space.rent}"
+      money_transfer(player, space.rent, space.owner)
+    else
+      mapping = {"1" => space.with_one_house,
+                 "2" => space.with_two_houses,
+                 "3" => space.with_three_houses,
+                 "4" => space.with_four_houses,
+                 "5" => space.with_hotel}
+      to_pay = mapping[space.number_of_houses.to_s]
+      money_transfer(player, to_pay, space.owner)
+    end
   end
 
   def option_to_buy(player, space)
@@ -211,8 +231,9 @@ class Turn
 end
 
   def roll(player)
+    puts player.name
     @@total_turns += 1
-    if @@total_turns > 500
+    if @@total_turns > 100
       exit_game
     end
 
@@ -269,7 +290,6 @@ end
       end
     end
     @player_list.each {|i| check_for_monopoly(i)}
-    #check_for_monopoly(@player_list[0])
     exit
   end
 
