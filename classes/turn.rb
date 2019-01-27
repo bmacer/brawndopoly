@@ -23,6 +23,8 @@ class Turn
     @spaces = $spaces
     @deck = $deck
 
+    @bankrupt_players = []
+
     @player_list = [
       Player.new({name: "brandon", human: false}),
       Player.new({name: "matt", human: false}),
@@ -198,15 +200,36 @@ class Turn
     puts amount
     player.bank -= amount
     if player.bank < 0
-      player_in_the_red
+      player_in_the_red(player)
     end
     if recipient
       recipient.bank += amount
+      if recipient.bank < 0
+        player_in_the_red(recipient)
+      end
     end
   end
 
-  def player_in_the_red
+  def player_in_the_red(player)
     puts "YOU ARE IN THE RED!!!!"
+    puts "#{player.name} has $#{player.bank}"
+    until player.bank > 0 || @bankrupt_players.include?(player)
+      puts("you gotta deal with your debt #{player.name}")
+      deal_with_debt(player)
+    end
+  end
+
+  def deal_with_debt(player)
+    puts "'s': sell houses, 'm' mortgage properties, 't' trade with others', 'b' declare bankruptcy"
+    choice = gets.chomp
+    if choice == 'b'
+      declare_bankruptcy(player)
+    end
+  end
+
+  def declare_bankruptcy(player)
+    @player_list.delete(player)
+    @bankrupt_players << player
   end
 
   def roll_from_jail(player)
@@ -253,7 +276,7 @@ end
   def roll(player)
     puts player.name
     @@total_turns += 1
-    if @@total_turns > 500
+    if @@total_turns > 200 || @player_list.length == 1
       exit_game
     end
 
@@ -314,6 +337,7 @@ end
     end
     @player_list.each {|i| check_for_monopoly(i)}
     puts net_worths
+    @bankrupt_players.each {|i| print "#{i.name}\n"}
     exit
   end
 
