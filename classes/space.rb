@@ -4,7 +4,7 @@ class Space
   :rent, :house_cost, :mortgage_value, :with_one_house, :with_two_houses, \
   :with_three_houses, :with_four_houses, :with_hotel, :rent_two_rr, \
   :rent_three_rr, :rent_four_rr, :multiplier_with_one_utility, :multiplier_with_two_utilities, :property_family
-  attr_accessor :is_owned, :owner, :number_of_houses
+  attr_accessor  :number_of_houses, :is_mortgaged #,:is_owned, :owner
 
   def initialize(options={})
     @name = options[:name]
@@ -30,6 +30,7 @@ class Space
     @multiplier_with_two_utilities = options[:multiplier_with_two_utilities]
     @property_family = options[:property_family]
     @number_of_houses = 0
+    @is_mortgaged = false
   end
 
 end
