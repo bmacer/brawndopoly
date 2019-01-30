@@ -261,7 +261,33 @@ class Turn
         choice = gets.chomp
         puts sell_a_house_here(player, choice)
       end
+    elsif choice == 'm'
+      mortgage_properties(player)
     end
+  end
+
+  def mortgage_properties(player)
+    puts "#{player.name} has entered the mortgage properties zone"
+    print player.properties
+    possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
+    if possible_properties_to_mortgage.length == 0
+      return "Nothing to mortgage"
+    end
+    possible_properties_to_mortgage.each {|i| puts "[#{i.number}] #{i.name}"}
+    puts "Which property to mortgage?"
+    choice = gets.chomp
+    mortgage_this_property(player, choice)
+  end
+
+  def mortgage_this_property(player, property)
+    possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
+    if !possible_properties_to_mortgage.include?(@spaces[property.to_i])
+      return "You can't mortgage that."
+    end
+    property_to_mortgage = @spaces[property.to_i]
+    property_to_mortgage.is_mortgaged = true
+    player.bank += property_to_mortgage.mortgage_value
+    puts player.bank
   end
 
   def sell_a_house_here(player, property)
