@@ -191,7 +191,7 @@ class Turn
       to_pay = mapping[space.number_of_houses.to_s]
       money_transfer(player, to_pay, which_player_owns(space))
     end
-    puts "#{space.name} is owned by #{which_player_owns(space).name}!"
+    puts "#{space.name} is owned by #{which_player_owns(space).name}!!"
     puts "#{space.number_of_houses ? (space.number_of_houses == 5 ? "HOTEL!" : "#{space.number_of_houses} house(s)") : ""}...Rent is #{to_pay || space.rent}"
   end
 
