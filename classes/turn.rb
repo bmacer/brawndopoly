@@ -40,13 +40,9 @@ class Turn
     #end
     @player_list[0].properties += [@spaces[1], @spaces[3]]
     @player_list[1].properties += [@spaces[37], @spaces[39]]
-    @player_list[2].properties += [@spaces[11], @spaces[12]]
+    @player_list[2].properties += [@spaces[11], @spaces[13]]
     @player_list[3].properties += [@spaces[18], @spaces[19]]
-    [1,3,37,39,11,12,18,19].each {|i| @spaces[i].number_of_houses = 2}
-    puts "hi"
-    puts @spaces[19]
-    puts property_is_owned(@spaces[19])
-    puts which_player_owns(@spaces[19])
+    [1,3,37,39,11,13,18,19].each {|i| @spaces[i].number_of_houses = 2}
     sleep(0.1)
     #[1, 3, 38, 39, 11, 12, 18, 19].each do |i|
     #  @spaces[i].is_owned = true
@@ -54,6 +50,7 @@ class Turn
 
     until false
       player = @player_list[0]
+      puts "\n\n\n\n\n\n"
       if player.human
         print "#{player.location} #{player.name}: 'r' to roll, 'b' to build, 'q' to quit': "
         move = gets.chomp
@@ -70,7 +67,6 @@ class Turn
               monopolies_owned = @spaces.select do |space|
                 space.property_family == monopoly_index
               end.each {|i| puts "#{i.number}: #{i.name} #{i.number_of_houses}"}
-              puts "~~~~~~"
             end
           puts "Build House on which property? "
           choice = gets.chomp.to_i
@@ -172,7 +168,6 @@ class Turn
       end
     elsif !space.is_property
       draw_a_card
-      puts "~~~~~~"
     else
       print "YOU SHOULDN'T BE SEEING THIS."
     end
@@ -223,7 +218,6 @@ class Turn
   end
 
   def money_transfer(player, amount, recipient=nil)
-    puts amount
     player.bank -= amount
     if player.bank < 0
       player_in_the_red(player)
@@ -237,18 +231,14 @@ class Turn
   end
 
   def player_in_the_red(player)
-    puts "YOU ARE IN THE RED!!!!"
-    puts player.display
-    puts "#{player.name} has $#{player.bank}"
     until player.bank > 0 || @bankrupt_players.include?(player)
-      puts("you gotta deal with your debt #{player.name}")
-      puts("you have #{player.bank}")
+      puts "#{player.name} IS IN THE RED with $#{player.bank}"
       deal_with_debt(player)
     end
   end
 
   def deal_with_debt(player)
-    puts "'s': sell houses, 'm' mortgage properties, 't' trade with others', 'b' declare bankruptcy"
+    puts "'s': sell houses, 'm' mortgage properties, 't' trade with others', 'b' declare bankruptcy, 'd' display player stats"
     choice = gets.chomp
     if choice == 'b'
       declare_bankruptcy(player)
@@ -262,17 +252,18 @@ class Turn
         puts sell_a_house_here(player, choice)
       end
     elsif choice == 'm'
-      mortgage_properties(player)
+      puts mortgage_properties(player)
+    elsif choice == 'd'
+      puts player.display
     end
   end
 
   def mortgage_properties(player)
-    puts "#{player.name} has entered the mortgage properties zone"
-    print player.properties
     possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
     if possible_properties_to_mortgage.length == 0
       return "You have nothing to mortgage"
     end
+    puts "#{player.name} has entered the mortgage properties zone"
     possible_properties_to_mortgage.each {|i| puts "[#{i.number}] #{i.name}"}
     puts "Which property to mortgage?"
     choice = gets.chomp
@@ -338,9 +329,7 @@ class Turn
     puts "You're in jail.  This is roll number #{player.turns_in_jail} from jail."
     if player.turns_in_jail == 3
       puts "TOO MANY, you must pay"
-      puts player.bank
       money_transfer(player, 100)
-      puts player.bank
       player.in_jail = false
       player.turns_in_jail = 1
     end
@@ -363,10 +352,7 @@ class Turn
     else
       print("other...")
     end
-
-    puts player.dice.display
-    puts player.dice.doubles
-    puts player.name
+    puts "#{player.name} | #{player.dice.display} | #{player.dice.doubles}"
     if player.dice.doubles
       player.in_jail == false
       player.turns_in_jail = 1
@@ -397,9 +383,8 @@ end
       end
     end
 
-    print player.dice.display
     player.location = (player.location + player.dice.total) % 40
-    print "\n\n#{player.name} is now on #{@spaces[player.location.to_i].name} [[space #{player.location}]] "
+    print "#{player.dice.display} #{player.name} is now on #{@spaces[player.location.to_i].name}"
     action_on_spot(player, @spaces[player.location.to_i])
   end
 
