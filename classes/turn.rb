@@ -261,6 +261,7 @@ class Turn
     end
   end
 
+
   def sell_houses_options(player)
     if player.properties.map {|property| property.number_of_houses}.
       inject(0) {|sum, i| sum + i} == 0
