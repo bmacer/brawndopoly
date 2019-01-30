@@ -271,7 +271,7 @@ class Turn
     print player.properties
     possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
     if possible_properties_to_mortgage.length == 0
-      return "Nothing to mortgage"
+      return "You have nothing to mortgage"
     end
     possible_properties_to_mortgage.each {|i| puts "[#{i.number}] #{i.name}"}
     puts "Which property to mortgage?"
