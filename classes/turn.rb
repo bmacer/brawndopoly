@@ -28,8 +28,8 @@ class Turn
     @player_list = [
       Player.new({name: "brandon", human: false}),
       Player.new({name: "matt", human: false}),
-      Player.new({name: "computer_1", human: false}),
-      Player.new({name: "computer_2", human: false})
+      Player.new({name: "stephen", human: false}),
+      Player.new({name: "alex", human: false})
     ]
 
     #@spaces.each do |i| # this gives player 1 brandon all the properties, to test monopoly/house-building functionality
@@ -42,6 +42,7 @@ class Turn
     @player_list[1].properties += [@spaces[37], @spaces[39]]
     @player_list[2].properties += [@spaces[11], @spaces[12]]
     @player_list[3].properties += [@spaces[18], @spaces[19]]
+    [1,3,37,39,11,12,18,19].each {|i| @spaces[i].number_of_houses = 2}
     puts "hi"
     puts @spaces[19]
     puts property_is_owned(@spaces[19])
@@ -241,6 +242,7 @@ class Turn
     puts "#{player.name} has $#{player.bank}"
     until player.bank > 0 || @bankrupt_players.include?(player)
       puts("you gotta deal with your debt #{player.name}")
+      puts("you have #{player.bank}")
       deal_with_debt(player)
     end
   end
@@ -251,14 +253,57 @@ class Turn
     if choice == 'b'
       declare_bankruptcy(player)
     elsif choice == 's'
-      can_sell = sell_houses_options(player)[1]
+      can_sell = sell_houses_options(player)
       puts can_sell.class
+      puts can_sell
       if can_sell[0] == true
-        puts "Which property to sell?"
+        puts "Which property to sell houses on?"
         choice = gets.chomp
-        sell_a_house_here(player, choice)
+        puts sell_a_house_here(player, choice)
       end
+    elsif choice == 'm'
+      mortgage_properties(player)
     end
+  end
+
+  def mortgage_properties(player)
+    puts "#{player.name} has entered the mortgage properties zone"
+    print player.properties
+    possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
+    if possible_properties_to_mortgage.length == 0
+      return "Nothing to mortgage"
+    end
+    possible_properties_to_mortgage.each {|i| puts "[#{i.number}] #{i.name}"}
+    puts "Which property to mortgage?"
+    choice = gets.chomp
+    mortgage_this_property(player, choice)
+  end
+
+  def mortgage_this_property(player, property)
+    possible_properties_to_mortgage = player.properties.select {|i| !i.is_mortgaged && i.number_of_houses == 0}
+    if !possible_properties_to_mortgage.include?(@spaces[property.to_i])
+      return "You can't mortgage that."
+    end
+    property_to_mortgage = @spaces[property.to_i]
+    property_to_mortgage.is_mortgaged = true
+    player.bank += property_to_mortgage.mortgage_value
+    puts player.bank
+  end
+
+  def sell_a_house_here(player, property)
+    if !player.properties.each {|i| i.number}.include?(@spaces[property.to_i])
+      return "You don't own that"
+    end
+    property_to_sell = @spaces[property.to_i]
+    puts @spaces[1].property_family
+    max_houses_in_family = @spaces.select {|i| i.property_family == property_to_sell.property_family}
+      .inject(0) {|memo, n| n.number_of_houses > memo ? n.number_of_houses : memo}
+    if property_to_sell.number_of_houses < max_houses_in_family
+      return "You need to sell in a balanced way"
+    end
+    property_to_sell.number_of_houses -= 1
+    player.bank += (property_to_sell.house_cost/2)
+    puts player.bank
   end
 
 
@@ -272,7 +317,7 @@ class Turn
     player.properties.select do |property|
       property.number_of_houses > 0
     end.map do |property|
-      to_return << "[#{property.number}]#{property.name}: #{property.number_of_houses}"
+      puts "[#{property.number}] #{property.name}: #{property.number_of_houses} houses"
     end
     return [true, to_return.join("\n")]
   end
