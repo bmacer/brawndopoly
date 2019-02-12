@@ -26,7 +26,7 @@ class Turn
     @bankrupt_players = []
 
     @player_list = [
-      Player.new({name: "brandon", human: false}),
+      Player.new({name: "brandon", human: true}),
       Player.new({name: "matt", human: false}),
       Player.new({name: "stephen", human: false}),
       Player.new({name: "alex", human: false})
@@ -40,9 +40,9 @@ class Turn
     #end
     @player_list[0].properties += [@spaces[1], @spaces[3]]
     @player_list[1].properties += [@spaces[37], @spaces[39]]
-    @player_list[2].properties += [@spaces[11], @spaces[13]]
-    @player_list[3].properties += [@spaces[18], @spaces[19]]
-    [1,3,37,39,11,13,18,19].each {|i| @spaces[i].number_of_houses = 2}
+    @player_list[2].properties += [@spaces[11], @spaces[13], @spaces[14]]
+    @player_list[3].properties += [@spaces[16], @spaces[18], @spaces[19]]
+    [1,3,37,39,11,13,14,16,18,19].each {|i| @spaces[i].number_of_houses = 2}
     sleep(0.1)
     #[1, 3, 38, 39, 11, 12, 18, 19].each do |i|
     #  @spaces[i].is_owned = true
@@ -52,7 +52,7 @@ class Turn
       player = @player_list[0]
       puts "\n\n\n\n\n\n"
       if player.human
-        print "#{player.location} #{player.name}: 'r' to roll, 'b' to build, 'q' to quit': "
+        print "#{player.name} is currently on: #{@spaces[player.location].name}\nDecision time: 'r' to roll, 'b' to build, 's' for stats, 'q' to quit': "
         move = gets.chomp
         if move == 'q'
           exit
@@ -73,6 +73,8 @@ class Turn
           property = @spaces.select {|i| i.number == choice}[0]
           puts build_a_house_here(player, property)
           end
+        elsif move == 's'
+          display_stats
         end
       else
         roll(player)
@@ -202,8 +204,8 @@ class Turn
       option = gets.chomp
       if option == 'y'
         money_transfer(player, space.property_cost)
-        space.is_owned = true
-        space.owner = player
+        #space.is_owned = true
+        #space.owner = player
         player.properties << space
         puts "#{space.name} purchased by #{player.name}"
       end
@@ -361,7 +363,6 @@ class Turn
 end
 
   def roll(player)
-    puts player.name
     @@total_turns += 1
     if @@total_turns > 200 || @player_list.length == 1
       exit_game
@@ -384,8 +385,9 @@ end
     end
 
     player.location = (player.location + player.dice.total) % 40
-    print "#{player.dice.display} #{player.name} is now on #{@spaces[player.location.to_i].name}"
+    print "#{player.name} rolls: #{player.dice.display}\n#{player.name} is now on #{@spaces[player.location.to_i].name}"
     action_on_spot(player, @spaces[player.location.to_i])
+    sleep(0.5)
   end
 
 
@@ -426,6 +428,28 @@ end
     puts "Bankrupt Players\n"
     @bankrupt_players.each {|i| print "#{i.name}\n"}
     exit
+  end
+
+  def display_stats
+    puts "\n\n\n\n\n\n\n\n\n\n\n\n---------------\nGAME STATISTICS\n---------------\n\n"
+    @player_list.each do |player|
+      puts player.name
+      puts "----------"
+      puts "Currently on: #{@spaces[player.location].name}"
+      puts "Bank: $#{player.bank}"
+      puts "Properties: "
+      player.properties.each do |property|
+        print property.name
+        if property.number_of_houses == 5
+          print " (with hotel)\n"
+        elsif property.number_of_houses > 0
+          print " (#{property.number_of_houses} houses)\n"
+        else
+          print "\n"
+        end
+      end
+      puts "\n\n"
+    end
   end
 
 end

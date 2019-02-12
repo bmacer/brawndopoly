@@ -12,7 +12,7 @@ class DiceSet < Dice
   end
 
   def display
-    "[#{@die_1.value}] [#{@die_2.value}] ... doubles? #{@doubles ? "YES" : "NO"}"
+    "[#{@die_1.value}] [#{@die_2.value}] #{@doubles ? "Doubles!" : ""}"
   end
 
   def roll

@@ -17,7 +17,10 @@ class Deck
   def pick_a_card
     card = @deck.shift
     @deck << card
+    puts "\n\n\nvvvvvvvvvv"
+    puts "Drawing Card...\n"
     puts card.show_card
+    puts "^^^^^^^^^\n\n\n"
     card
   end
 
