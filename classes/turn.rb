@@ -47,6 +47,7 @@ class Turn
     #[1, 3, 38, 39, 11, 12, 18, 19].each do |i|
     #  @spaces[i].is_owned = true
     #end
+    
 
     until false
       player = @player_list[0]
